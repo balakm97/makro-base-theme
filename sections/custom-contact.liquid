@@ -1,0 +1,276 @@
+{{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+    .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Master class for all form inputs and textarea */
+        .custom-form {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .custom-form:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        /* Custom styles for submit button */
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 150px;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 20px;
+            }
+        }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+<div class="container">
+    <h2>Contact Us</h2>
+<form id="contactForm">
+    <!-- Name Field -->
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="contact[name]" class="custom-form" placeholder="Your Name *">
+        <span id="nameError" class="error"></span>
+    </div>
+
+    <!-- Email Field -->
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="contact[email]" class="custom-form" placeholder="Your Email *">
+        <span id="emailError" class="error"></span>
+    </div>
+
+    <!-- Subject Field -->
+    <div class="form-group">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="contact[subject]" class="custom-form" placeholder="Subject *">
+        <span id="subjectError" class="error"></span>
+    </div>
+
+    <!-- Message Field -->
+    <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="contact[message]" class="custom-form" placeholder="Your Message"></textarea>
+        <span id="messageError" class="error"></span>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-group">
+        <input type="submit" value="Send Message">
+    </div>
+</form>
+
+</div>
+</div>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(event) {
+    let isValid = true;
+
+    // Get form values
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const subject = document.getElementById('subject').value.trim();
+    const message = document.getElementById('message').value.trim();
+
+    // Get error display elements
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    const subjectError = document.getElementById('subjectError');
+    const messageError = document.getElementById('messageError');
+
+    // Clear previous error messages
+    nameError.textContent = '';
+    emailError.textContent = '';
+    subjectError.textContent = '';
+    messageError.textContent = '';
+
+    // Validate Name
+    if (name === '') {
+        nameError.textContent = 'Please enter your name.';
+        isValid = false;
+    }
+
+    // Validate Email
+    if (email === '') {
+        emailError.textContent = 'Please enter your email.';
+        isValid = false;
+    } else {
+        // Simple email pattern check
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            emailError.textContent = 'Please enter a valid email address.';
+            isValid = false;
+        }
+    }
+
+    // Validate Subject
+    if (subject === '') {
+        subjectError.textContent = 'Please enter a subject.';
+        isValid = false;
+    }
+
+    // Optionally validate Message (if required)
+    // if (message === '') {
+    //     messageError.textContent = 'Please enter your message.';
+    //     isValid = false;
+    // }
+
+    // Prevent form submission if validation fails
+    if (!isValid) {
+        event.preventDefault();
+    }
+});
+</script>
+
+
+{% schema %}
+{
+  "name": "Custom contact form",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "t:sections.contact-form.settings.title.default",
+      "label": "t:sections.contact-form.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "hxl",
+          "label": "t:sections.all.heading_size.options__4.label"
+        },
+        {
+          "value": "hxxl",
+          "label": "t:sections.all.heading_size.options__5.label"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "custom contact form"
+    }
+  ]
+}
+{% endschema %}
